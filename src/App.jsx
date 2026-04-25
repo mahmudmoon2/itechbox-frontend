@@ -10,6 +10,9 @@ import Collection from './pages/Collection'; // View All পেজ
 import Login from './pages/Login';           // লগইন পেজ
 import Register from './pages/Register';     // রেজিস্ট্রেশন পেজ
 import Search from './pages/Search';         // সার্চ রেজাল্ট পেজ
+import Contact from './components/Contact';         // যোগাযোগ পেজ (যদি থাকে)
+import Services from './pages/Services'; // এই লাইনটি যোগ করুন
+import About from './pages/About';
 
 function App() {
   return (
@@ -22,7 +25,10 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/search" element={<Search />} />
-            
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/about" element={<About />} />
+
             {/* View All / Collection Routes */}
             <Route path="/products" element={<Collection type="all" />} />
             <Route path="/collection/:type" element={<Collection />} />

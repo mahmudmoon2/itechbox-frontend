@@ -10,10 +10,12 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
+  // States
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   
+  // Mobile Dropdown States
   const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
   const [mobileActiveCategory, setMobileActiveCategory] = useState(null);
   
@@ -39,30 +41,38 @@ const Navbar = () => {
 
   return (
     <>
-      {/* নোট: এখানে 'fixed' ব্যবহার করা হয়েছে যাতে এটি ১০০% স্টিকি থাকে। 
-        এর ফলে আপনার Home.jsx বা মেইন কন্টেইনারে 'pt-20' বা 'pt-24' প্যাডিং দিতে হতে পারে।
-      */}
-      <header className="bg-white text-textBlack w-full fixed top-0 left-0 z-[100] shadow-md border-b border-gray-100">
+      {/* Header */}
+      <header className="bg-textBlack text-white w-full fixed top-0 left-0 z-[100] shadow-2xl">
         <div className="container mx-auto px-4 lg:px-8 py-2 md:py-3 flex items-center justify-between">
           
           {/* 1. Mobile Menu Button */}
           <button 
-            className="lg:hidden p-2 -ml-2 text-gray-800 hover:text-primaryOrange transition-colors"
+            className="lg:hidden p-2 -ml-2 text-gray-300 hover:text-primaryOrange transition-colors"
             onClick={() => setIsMobileMenuOpen(true)}
           >
-            <Menu className="w-7 h-7" />
+            <Menu className="w-8 h-8" />
           </button>
 
-          {/* 2. Logo - বোরো সাইজ (h-14 এবং md:h-20) */}
+          {/* 2. Logo & Techy Brand Name */}
           <div 
-            className="flex-shrink-0 cursor-pointer flex items-center lg:mr-10" 
+            className="flex-shrink-0 cursor-pointer flex items-center gap-3 lg:mr-10 py-1 group" 
             onClick={() => navigate('/')}
           >
+            {/* Circular Logo */}
             <img 
               src="/logo.png" 
               alt="iTechBox Logo" 
-              className="h-14 md:h-20 w-auto object-contain transition-transform duration-300 hover:scale-105" 
+              className="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover transition-transform duration-300 group-hover:scale-105 border border-gray-700 shadow-lg" 
             />
+            {/* Techy Style Text */}
+            <div className="flex items-center">
+              <span className="text-xl md:text-2xl font-black tracking-tighter text-white uppercase">
+                iTech<span className="text-primaryOrange">BOX</span>
+              </span>
+              <span className="ml-1.5 md:ml-2 bg-primaryOrange/10 text-primaryOrange border border-primaryOrange/30 text-[10px] md:text-xs font-mono font-bold px-1.5 py-0.5 rounded uppercase tracking-widest shadow-sm">
+                BD
+              </span>
+            </div>
           </div>
 
           {/* 3. Main Navigation (Desktop) */}
@@ -70,20 +80,22 @@ const Navbar = () => {
             
             <div 
               onClick={() => navigate('/')} 
-              className={`cursor-pointer transition-colors hover:text-primaryOrange ${isActive('/') ? 'text-primaryOrange' : 'text-gray-700'}`}
+              className={`cursor-pointer transition-colors hover:text-primaryOrange ${isActive('/') ? 'text-primaryOrange' : 'text-white'}`}
             >
               HOME
             </div>
 
-            <div className="relative group cursor-pointer py-4">
-              <div className="flex items-center gap-1 text-gray-700 hover:text-primaryOrange transition-colors">
-                ABOUT US <ChevronDown className="w-4 h-4" />
-              </div>
+            {/* About Us (Dropdown removed) */}
+            <div 
+              onClick={() => navigate('/about')} 
+              className={`cursor-pointer transition-colors hover:text-primaryOrange ${isActive('/about') ? 'text-primaryOrange' : 'text-white'}`}
+            >
+              ABOUT US
             </div>
 
             {/* OUR PRODUCTS with Nested Dropdown */}
             <div className="relative group cursor-pointer py-4">
-              <div className="flex items-center gap-1 text-gray-700 hover:text-primaryOrange transition-colors">
+              <div className="flex items-center gap-1 text-white hover:text-primaryOrange transition-colors">
                 OUR PRODUCTS <ChevronDown className="w-4 h-4" />
               </div>
 
@@ -93,7 +105,7 @@ const Navbar = () => {
                     <li key={category.id} className="relative group/sub">
                       <div 
                         onClick={() => navigate(`/category/${category.slug}`)}
-                        className="px-5 py-3 text-gray-700 text-sm hover:bg-primaryOrange hover:text-white transition-colors flex justify-between items-center capitalize"
+                        className="px-5 py-3 text-gray-800 text-sm hover:bg-primaryOrange hover:text-white transition-colors flex justify-between items-center capitalize"
                       >
                         {category.name}
                         <ChevronRight className="w-4 h-4" />
@@ -128,14 +140,14 @@ const Navbar = () => {
 
             <div 
               onClick={() => navigate('/services')} 
-              className={`cursor-pointer transition-colors hover:text-primaryOrange ${isActive('/services') ? 'text-primaryOrange' : 'text-gray-700'}`}
+              className={`cursor-pointer transition-colors hover:text-primaryOrange ${isActive('/services') ? 'text-primaryOrange' : 'text-white'}`}
             >
               OUR SERVICES
             </div>
             
             <div 
               onClick={() => navigate('/contact')} 
-              className={`cursor-pointer transition-colors hover:text-primaryOrange ${isActive('/contact') ? 'text-primaryOrange' : 'text-gray-700'}`}
+              className={`cursor-pointer transition-colors hover:text-primaryOrange ${isActive('/contact') ? 'text-primaryOrange' : 'text-white'}`}
             >
               CONTACT US
             </div>
@@ -147,15 +159,15 @@ const Navbar = () => {
             
             <button 
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="p-1 text-gray-700 hover:text-primaryOrange transition-colors"
+              className="p-1 text-gray-200 hover:text-primaryOrange transition-colors"
             >
-              <Search className="w-6 h-6" />
+              <Search className="w-6 h-6 md:w-7 md:h-7" />
             </button>
 
-            <div onClick={() => setIsCartOpen(true)} className="relative cursor-pointer text-gray-700 hover:text-primaryOrange transition-colors">
-              <ShoppingCart className="w-6 h-6" />
+            <div onClick={() => setIsCartOpen(true)} className="relative cursor-pointer text-gray-200 hover:text-primaryOrange transition-colors">
+              <ShoppingCart className="w-6 h-6 md:w-7 md:h-7" />
               {cart.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-primaryOrange text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full shadow-md">
+                <span className="absolute -top-2 -right-2 bg-primaryOrange text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full shadow-md border-2 border-textBlack">
                   {cart.length}
                 </span>
               )}
@@ -165,7 +177,7 @@ const Navbar = () => {
               {user ? (
                 <button 
                   onClick={logout} 
-                  className="flex items-center gap-2 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-4 py-2 rounded-full transition-colors text-xs font-bold"
+                  className="flex items-center gap-2 bg-gray-800 hover:bg-red-600 px-4 py-2 rounded-full transition-colors text-xs font-bold text-white"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Logout</span>
@@ -173,7 +185,7 @@ const Navbar = () => {
               ) : (
                 <div 
                   onClick={() => navigate('/login')}
-                  className="cursor-pointer bg-gray-100 text-gray-700 hover:bg-primaryOrange hover:text-white transition-colors p-2.5 rounded-full border border-gray-200"
+                  className="cursor-pointer bg-gray-800 text-white hover:bg-primaryOrange transition-colors p-2.5 rounded-full border border-gray-700"
                 >
                   <User className="w-6 h-6" />
                 </div>
@@ -185,8 +197,8 @@ const Navbar = () => {
 
         {/* Expandable Search Bar */}
         <div 
-          className={`w-full bg-white border-t border-gray-100 transition-all duration-300 overflow-hidden ${
-            isSearchOpen ? 'max-h-24 py-4' : 'max-h-0 py-0'
+          className={`w-full bg-gray-900 border-t border-gray-800 transition-all duration-300 overflow-hidden ${
+            isSearchOpen ? 'max-h-24 py-5' : 'max-h-0 py-0'
           }`}
         >
           <div className="container mx-auto px-4">
@@ -196,10 +208,10 @@ const Navbar = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search for gadget, category, or brand..." 
-                className="w-full bg-gray-50 text-textBlack border border-gray-200 rounded-xl px-5 py-3 pr-12 focus:outline-none focus:border-primaryOrange focus:bg-white transition-colors"
+                className="w-full bg-gray-800 text-white border border-gray-700 rounded-xl px-6 py-3.5 pr-12 focus:outline-none focus:border-primaryOrange focus:bg-gray-850 transition-colors"
                 autoFocus={isSearchOpen}
               />
-              <button type="submit" className="absolute right-4 top-3 text-gray-400 hover:text-primaryOrange">
+              <button type="submit" className="absolute right-4 top-4 text-gray-400 hover:text-primaryOrange">
                 <Search className="w-5 h-5" />
               </button>
             </form>
@@ -207,12 +219,12 @@ const Navbar = () => {
         </div>
       </header>
 
-      {/* স্পেসার যাতে কন্টেন্ট নেভবারের নিচে না চলে যায় */}
-      <div className="h-20 md:h-24"></div>
+      {/* Spacer */}
+      <div className="h-16 md:h-20"></div>
 
       {/* Mobile Sidebar Drawer */}
       <div 
-        className={`fixed inset-0 bg-black/60 z-[200] backdrop-blur-sm transition-opacity lg:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+        className={`fixed inset-0 bg-black/70 z-[200] backdrop-blur-sm transition-opacity lg:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
         onClick={closeMobileMenu}
       />
 
@@ -222,23 +234,33 @@ const Navbar = () => {
         }`}
       >
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
-          <img 
-            src="/logo.png" 
-            alt="Logo" 
-            className="h-12 w-auto object-contain" 
-          />
+          
+          {/* Mobile Menu Logo & Text */}
+          <div className="flex items-center gap-2">
+            <img 
+              src="/logo.png" 
+              alt="Logo" 
+              className="h-10 w-10 rounded-full object-cover border border-gray-200" 
+            />
+            <div className="flex items-center">
+              <span className="text-xl font-black tracking-tighter text-textBlack uppercase">
+                iTech<span className="text-primaryOrange">BOX</span>
+              </span>
+            </div>
+          </div>
+
           <button onClick={closeMobileMenu} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-            <X className="w-6 h-6 text-gray-500" />
+            <X className="w-7 h-7 text-gray-500" />
           </button>
         </div>
 
         <div className="flex-1 overflow-y-auto py-4 px-5">
-          <ul className="flex flex-col space-y-4 font-bold text-gray-700">
-            <li onClick={() => { navigate('/'); closeMobileMenu(); }} className="hover:text-primaryOrange uppercase">HOME</li>
-            <li className="hover:text-primaryOrange uppercase">ABOUT US</li>
-            <li onClick={() => { navigate('/products'); closeMobileMenu(); }} className="hover:text-primaryOrange uppercase">OUR PRODUCTS</li>
-            <li onClick={() => { navigate('/services'); closeMobileMenu(); }} className="hover:text-primaryOrange uppercase">OUR SERVICES</li>
-            <li onClick={() => { navigate('/contact'); closeMobileMenu(); }} className="hover:text-primaryOrange uppercase">CONTACT US</li>
+          <ul className="flex flex-col space-y-5 font-bold text-gray-700 text-lg">
+            <li onClick={() => { navigate('/'); closeMobileMenu(); }} className="hover:text-primaryOrange cursor-pointer">HOME</li>
+            <li onClick={() => { navigate('/about'); closeMobileMenu(); }} className="hover:text-primaryOrange cursor-pointer">ABOUT US</li>
+            <li onClick={() => { navigate('/products'); closeMobileMenu(); }} className="hover:text-primaryOrange cursor-pointer">OUR PRODUCTS</li>
+            <li onClick={() => { navigate('/services'); closeMobileMenu(); }} className="hover:text-primaryOrange cursor-pointer">OUR SERVICES</li>
+            <li onClick={() => { navigate('/contact'); closeMobileMenu(); }} className="hover:text-primaryOrange cursor-pointer">CONTACT US</li>
           </ul>
         </div>
 
@@ -246,7 +268,7 @@ const Navbar = () => {
           {user ? (
             <button onClick={() => { logout(); closeMobileMenu(); }} className="w-full bg-red-50 text-red-600 py-3 rounded-xl font-bold">Logout</button>
           ) : (
-            <button onClick={() => { navigate('/login'); closeMobileMenu(); }} className="w-full bg-textBlack text-white py-3 rounded-xl font-bold">Login / Register</button>
+            <button onClick={() => { navigate('/login'); closeMobileMenu(); }} className="w-full bg-textBlack text-white py-4 rounded-xl font-bold">Login / Register</button>
           )}
         </div>
       </div>
