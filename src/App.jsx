@@ -6,10 +6,10 @@ import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
 import Home from './pages/Home';
 import Checkout from './pages/Checkout';
-
-// এই নিচের দুইটা লাইন অবশ্যই যোগ করবেন
-import Login from './pages/Login'; 
-import Register from './pages/Register'; 
+import Collection from './pages/Collection'; // View All পেজ
+import Login from './pages/Login';           // লগইন পেজ
+import Register from './pages/Register';     // রেজিস্ট্রেশন পেজ
+import Search from './pages/Search';         // সার্চ রেজাল্ট পেজ
 
 function App() {
   return (
@@ -21,8 +21,17 @@ function App() {
         <div className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/search" element={<Search />} />
+            
+            {/* View All / Collection Routes */}
+            <Route path="/products" element={<Collection type="all" />} />
+            <Route path="/collection/:type" element={<Collection />} />
+            <Route path="/category/:slug" element={<Collection />} />
+
+            {/* Checkout Route */}
             <Route path="/checkout" element={<Checkout />} />
-            {/* এখন এই লাইনগুলো কাজ করবে */}
+            
+            {/* Authentication Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>

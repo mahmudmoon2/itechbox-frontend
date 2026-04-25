@@ -1,24 +1,34 @@
 // src/components/CategoryGrid.jsx
 import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { StoreContext } from '../context/StoreContext';
 
 const CategoryGrid = () => {
-  // StoreContext থেকে ডাইনামিক ক্যাটাগরিগুলো নিয়ে আসছি
   const { categories } = useContext(StoreContext);
+  const navigate = useNavigate();
 
-  // যদি ক্যাটাগরি লোড হতে সময় লাগে বা না থাকে, তাহলে কিছুই দেখাবে না (অথবা আপনি চাইলে লোডার দিতে পারেন)
   if (!categories || categories.length === 0) return null;
 
   return (
     <section className="container mx-auto px-4 py-10">
       <h2 className="text-2xl font-black text-textBlack mb-8 tracking-tight">Shop by Category</h2>
       
-      <div className="grid grid-cols-4 md:grid-cols-8 gap-6">
-        {categories.slice(0, 8).map((cat) => ( // ডিজাইন ঠিক রাখতে প্রথম ৮টি ক্যাটাগরি দেখাচ্ছি
-          <div key={cat.id} className="flex flex-col items-center group cursor-pointer">
+      {/* গ্রিডের বদলে Flex Wrap ব্যবহার করা হয়েছে। 
+        এতে যতোই ক্যাটাগরি আসুক, ৮টার পর অটোমেটিক নিচে নেমে যাবে এবং justify-center এর কারণে সুন্দর করে মাঝখানে থাকবে। 
+      */}
+      <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-x-10 md:gap-y-8">
+        
+        {/* slice(0, 8) রিমুভ করা হয়েছে, তাই এখন জ্যাঙ্গো থেকে আসা সবগুলো ক্যাটাগরি লুপ হবে */}
+        {categories.map((cat) => (
+          <div 
+            key={cat.id} 
+            onClick={() => navigate(`/category/${cat.slug}`)}
+            className="flex flex-col items-center group cursor-pointer w-[75px] md:w-[100px]" // ফিক্সড উইডথ যাতে এলাইনমেন্ট ঠিক থাকে
+          >
             
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-white border border-gray-100 rounded-full flex items-center justify-center overflow-hidden shadow-sm group-hover:shadow-md group-hover:border-primaryOrange transition-all duration-300 p-4">
-              {/* জ্যাঙ্গো থেকে আইকন আসলে সেটি দেখাবে, না হলে নামের প্রথম অক্ষর দেখাবে */}
+            {/* ছবির মতো হালকা ব্যাকগ্রাউন্ড (bg-gray-50) এবং সুন্দর হোভার ইফেক্ট */}
+            <div className="w-16 h-16 md:w-[90px] md:h-[90px] bg-gray-50 hover:bg-white rounded-full flex items-center justify-center overflow-hidden shadow-sm group-hover:shadow-md group-hover:border group-hover:border-primaryOrange transition-all duration-300 p-4">
+              
               {cat.icon ? (
                 <img 
                   src={cat.icon} 
@@ -32,12 +42,13 @@ const CategoryGrid = () => {
               )}
             </div>
 
-            <span className="mt-3 text-xs md:text-sm font-bold text-gray-600 group-hover:text-primaryOrange transition-colors capitalize text-center">
+            <span className="mt-3 text-[11px] md:text-sm font-bold text-gray-600 group-hover:text-primaryOrange transition-colors capitalize text-center leading-tight">
               {cat.name}
             </span>
 
           </div>
         ))}
+
       </div>
     </section>
   );

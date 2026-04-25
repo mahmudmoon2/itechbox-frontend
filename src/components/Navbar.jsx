@@ -1,89 +1,171 @@
+/* eslint-disable no-unused-vars */
 // src/components/Navbar.jsx
 import React, { useState, useContext } from 'react';
-import { Search, ShoppingCart, User, LogOut, Menu, X } from 'lucide-react';
+import { Search, ShoppingCart, User, LogOut, Menu, X, ChevronDown, ChevronRight } from 'lucide-react';
 import { StoreContext } from '../context/StoreContext';
 import { AuthContext } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   
-  // States for Toggles
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   
-  const { cart, setIsCartOpen, categories } = useContext(StoreContext);
+  const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
+  const [mobileActiveCategory, setMobileActiveCategory] = useState(null);
+  
+  const { cart, setIsCartOpen, categories, products } = useContext(StoreContext);
   const { user, logout } = useContext(AuthContext);
+
+  const isActive = (path) => location.pathname === path;
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+    setMobileProductsOpen(false);
+    setMobileActiveCategory(null);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setIsSearchOpen(false);
+      setSearchQuery('');
+    }
+  };
 
   return (
     <>
-      <header className="bg-textBlack text-white w-full sticky top-0 z-50 shadow-lg">
-        <div className="container mx-auto px-4 lg:px-8 py-4 flex items-center justify-between">
+      {/* নোট: এখানে 'fixed' ব্যবহার করা হয়েছে যাতে এটি ১০০% স্টিকি থাকে। 
+        এর ফলে আপনার Home.jsx বা মেইন কন্টেইনারে 'pt-20' বা 'pt-24' প্যাডিং দিতে হতে পারে।
+      */}
+      <header className="bg-white text-textBlack w-full fixed top-0 left-0 z-[100] shadow-md border-b border-gray-100">
+        <div className="container mx-auto px-4 lg:px-8 py-2 md:py-3 flex items-center justify-between">
           
-          {/* 1. Mobile Menu Button (Hamburger) */}
+          {/* 1. Mobile Menu Button */}
           <button 
-            className="lg:hidden p-2 -ml-2 text-gray-300 hover:text-primaryOrange transition-colors"
+            className="lg:hidden p-2 -ml-2 text-gray-800 hover:text-primaryOrange transition-colors"
             onClick={() => setIsMobileMenuOpen(true)}
           >
-            <Menu className="w-6 h-6" />
+            <Menu className="w-7 h-7" />
           </button>
 
-          {/* 2. Logo */}
-          <div className="flex-shrink-0 cursor-pointer flex items-center lg:mr-8" onClick={() => navigate('/')}>
-            <h1 className="text-2xl md:text-3xl font-black tracking-tight italic">
-              <span className="text-white">iTech</span>
-              <span className="text-primaryOrange">Box</span>
-            </h1>
+          {/* 2. Logo - বোরো সাইজ (h-14 এবং md:h-20) */}
+          <div 
+            className="flex-shrink-0 cursor-pointer flex items-center lg:mr-10" 
+            onClick={() => navigate('/')}
+          >
+            <img 
+              src="/logo.png" 
+              alt="iTechBox Logo" 
+              className="h-14 md:h-20 w-auto object-contain transition-transform duration-300 hover:scale-105" 
+            />
           </div>
 
-          {/* 3. Main Navigation (Desktop Only) */}
-          <nav className="hidden lg:flex flex-1 justify-center items-center space-x-5 xl:space-x-8 font-medium">
-            {categories && categories.length > 0 ? (
-              categories.slice(0, 8).map((category) => (
-                <div 
-                  key={category.id} 
-                  className="hover:text-primaryOrange cursor-pointer transition-colors py-2 capitalize whitespace-nowrap text-sm xl:text-base"
-                >
-                  {category.name}
-                </div>
-              ))
-            ) : (
-               <div className="text-gray-500 text-sm">Loading...</div>
-            )}
+          {/* 3. Main Navigation (Desktop) */}
+          <nav className="hidden lg:flex flex-1 justify-center items-center space-x-6 xl:space-x-8 font-semibold tracking-wide text-sm uppercase">
+            
+            <div 
+              onClick={() => navigate('/')} 
+              className={`cursor-pointer transition-colors hover:text-primaryOrange ${isActive('/') ? 'text-primaryOrange' : 'text-gray-700'}`}
+            >
+              HOME
+            </div>
+
+            <div className="relative group cursor-pointer py-4">
+              <div className="flex items-center gap-1 text-gray-700 hover:text-primaryOrange transition-colors">
+                ABOUT US <ChevronDown className="w-4 h-4" />
+              </div>
+            </div>
+
+            {/* OUR PRODUCTS with Nested Dropdown */}
+            <div className="relative group cursor-pointer py-4">
+              <div className="flex items-center gap-1 text-gray-700 hover:text-primaryOrange transition-colors">
+                OUR PRODUCTS <ChevronDown className="w-4 h-4" />
+              </div>
+
+              <div className="absolute top-[70px] left-0 w-64 bg-white rounded-lg shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                <ul className="py-2">
+                  {categories && categories.map((category) => (
+                    <li key={category.id} className="relative group/sub">
+                      <div 
+                        onClick={() => navigate(`/category/${category.slug}`)}
+                        className="px-5 py-3 text-gray-700 text-sm hover:bg-primaryOrange hover:text-white transition-colors flex justify-between items-center capitalize"
+                      >
+                        {category.name}
+                        <ChevronRight className="w-4 h-4" />
+                      </div>
+
+                      <div className="absolute top-0 left-full ml-1 w-72 bg-white rounded-lg shadow-2xl border border-gray-100 opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 z-50">
+                        <ul className="py-2">
+                          {products?.filter(p => p.category?.id === category.id || p.category_name?.toLowerCase() === category.name?.toLowerCase())
+                            .slice(0, 5)
+                            .map(product => (
+                            <li 
+                              key={product.id}
+                              onClick={() => navigate(`/product/${product.slug}`)} 
+                              className="px-5 py-2.5 text-gray-600 text-sm hover:bg-gray-50 hover:text-primaryOrange transition-colors border-b border-gray-50 truncate"
+                            >
+                              {product.name}
+                            </li>
+                          ))}
+                          <li 
+                            onClick={() => navigate(`/category/${category.slug}`)}
+                            className="px-5 py-3 text-primaryOrange text-sm font-bold hover:bg-gray-50 transition-colors text-center"
+                          >
+                            View All {category.name}
+                          </li>
+                        </ul>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div 
+              onClick={() => navigate('/services')} 
+              className={`cursor-pointer transition-colors hover:text-primaryOrange ${isActive('/services') ? 'text-primaryOrange' : 'text-gray-700'}`}
+            >
+              OUR SERVICES
+            </div>
+            
             <div 
               onClick={() => navigate('/contact')} 
-              className="hover:text-primaryOrange cursor-pointer transition-colors py-2 whitespace-nowrap text-sm xl:text-base"
+              className={`cursor-pointer transition-colors hover:text-primaryOrange ${isActive('/contact') ? 'text-primaryOrange' : 'text-gray-700'}`}
             >
-              Contact Us
+              CONTACT US
             </div>
+
           </nav>
 
-          {/* 4. Action Icons (Search, Cart, User) */}
+          {/* 4. Action Icons */}
           <div className="flex items-center space-x-4 lg:space-x-6 ml-auto">
             
-            {/* Search Icon Toggle */}
             <button 
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="p-1 text-gray-300 hover:text-primaryOrange transition-colors"
+              className="p-1 text-gray-700 hover:text-primaryOrange transition-colors"
             >
-              <Search className="w-5 h-5 md:w-6 md:h-6" />
+              <Search className="w-6 h-6" />
             </button>
 
-            {/* Cart Icon */}
-            <div onClick={() => setIsCartOpen(true)} className="relative cursor-pointer text-gray-300 hover:text-primaryOrange transition-colors">
-              <ShoppingCart className="w-5 h-5 md:w-6 md:h-6" />
-              <span className="absolute -top-2 -right-2 bg-primaryOrange text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full shadow-md">
-                {cart.length}
-              </span>
+            <div onClick={() => setIsCartOpen(true)} className="relative cursor-pointer text-gray-700 hover:text-primaryOrange transition-colors">
+              <ShoppingCart className="w-6 h-6" />
+              {cart.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-primaryOrange text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full shadow-md">
+                  {cart.length}
+                </span>
+              )}
             </div>
 
-            {/* Desktop User Profile / Logout (Hidden on mobile, moved to sidebar) */}
             <div className="hidden lg:flex items-center gap-4">
               {user ? (
                 <button 
                   onClick={logout} 
-                  className="flex items-center gap-2 bg-gray-800 hover:bg-red-600 px-3 py-1.5 rounded-full transition-colors text-xs font-bold"
-                  title="Logout"
+                  className="flex items-center gap-2 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-4 py-2 rounded-full transition-colors text-xs font-bold"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Logout</span>
@@ -91,10 +173,9 @@ const Navbar = () => {
               ) : (
                 <div 
                   onClick={() => navigate('/login')}
-                  className="cursor-pointer bg-gray-800 hover:bg-primaryOrange hover:text-white transition-colors p-1.5 rounded-full border border-gray-700"
-                  title="Login"
+                  className="cursor-pointer bg-gray-100 text-gray-700 hover:bg-primaryOrange hover:text-white transition-colors p-2.5 rounded-full border border-gray-200"
                 >
-                  <User className="w-5 h-5" />
+                  <User className="w-6 h-6" />
                 </div>
               )}
             </div>
@@ -102,99 +183,70 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* --- Expandable Search Bar (Appears below Navbar when clicked) --- */}
+        {/* Expandable Search Bar */}
         <div 
-          className={`w-full bg-gray-900 border-t border-gray-800 transition-all duration-300 overflow-hidden ${
-            isSearchOpen ? 'max-h-24 py-4' : 'max-h-0 py-0 border-transparent'
+          className={`w-full bg-white border-t border-gray-100 transition-all duration-300 overflow-hidden ${
+            isSearchOpen ? 'max-h-24 py-4' : 'max-h-0 py-0'
           }`}
         >
-          <div className="container mx-auto px-4 lg:px-8">
-            <div className="relative">
+          <div className="container mx-auto px-4">
+            <form onSubmit={handleSearch} className="relative max-w-2xl mx-auto">
               <input 
                 type="text" 
-                placeholder="Search for smartphones, gadgets, accessories..." 
-                className="w-full bg-gray-800 text-white border border-gray-700 rounded-xl px-5 py-3 pr-12 focus:outline-none focus:border-primaryOrange transition-colors"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search for gadget, category, or brand..." 
+                className="w-full bg-gray-50 text-textBlack border border-gray-200 rounded-xl px-5 py-3 pr-12 focus:outline-none focus:border-primaryOrange focus:bg-white transition-colors"
                 autoFocus={isSearchOpen}
               />
-              <button className="absolute right-4 top-3 text-gray-400 hover:text-primaryOrange">
+              <button type="submit" className="absolute right-4 top-3 text-gray-400 hover:text-primaryOrange">
                 <Search className="w-5 h-5" />
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </header>
 
-      {/* --- Mobile Sidebar Drawer --- */}
-      {/* Background Overlay */}
+      {/* স্পেসার যাতে কন্টেন্ট নেভবারের নিচে না চলে যায় */}
+      <div className="h-20 md:h-24"></div>
+
+      {/* Mobile Sidebar Drawer */}
       <div 
-        className={`fixed inset-0 bg-black/60 z-[60] backdrop-blur-sm transition-opacity lg:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
-        onClick={() => setIsMobileMenuOpen(false)}
+        className={`fixed inset-0 bg-black/60 z-[200] backdrop-blur-sm transition-opacity lg:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+        onClick={closeMobileMenu}
       />
 
-      {/* Sidebar Content */}
       <div 
-        className={`fixed top-0 left-0 h-full w-[280px] bg-white z-[70] shadow-2xl transform transition-transform duration-300 ease-in-out lg:hidden flex flex-col ${
+        className={`fixed top-0 left-0 h-full w-[300px] bg-white z-[210] shadow-2xl transform transition-transform duration-300 ease-in-out lg:hidden flex flex-col ${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Sidebar Header */}
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
-          <h1 className="text-2xl font-black tracking-tight italic">
-            <span className="text-textBlack">iTech</span>
-            <span className="text-primaryOrange">Box</span>
-          </h1>
-          <button 
-            onClick={() => setIsMobileMenuOpen(false)} 
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-          >
-            <X className="w-5 h-5 text-gray-500" />
+          <img 
+            src="/logo.png" 
+            alt="Logo" 
+            className="h-12 w-auto object-contain" 
+          />
+          <button onClick={closeMobileMenu} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <X className="w-6 h-6 text-gray-500" />
           </button>
         </div>
 
-        {/* Sidebar Links (Categories & Contact) */}
-        <div className="flex-1 overflow-y-auto py-4">
-          <h3 className="px-5 text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Categories</h3>
-          <ul className="flex flex-col">
-            {categories && categories.length > 0 ? (
-              categories.map((category) => (
-                <li 
-                  key={category.id} 
-                  className="px-5 py-3 text-textBlack font-medium border-b border-gray-50 hover:bg-primaryOrange/10 hover:text-primaryOrange cursor-pointer capitalize"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {category.name}
-                </li>
-              ))
-            ) : (
-              <li className="px-5 py-3 text-gray-500 text-sm">Loading...</li>
-            )}
+        <div className="flex-1 overflow-y-auto py-4 px-5">
+          <ul className="flex flex-col space-y-4 font-bold text-gray-700">
+            <li onClick={() => { navigate('/'); closeMobileMenu(); }} className="hover:text-primaryOrange uppercase">HOME</li>
+            <li className="hover:text-primaryOrange uppercase">ABOUT US</li>
+            <li onClick={() => { navigate('/products'); closeMobileMenu(); }} className="hover:text-primaryOrange uppercase">OUR PRODUCTS</li>
+            <li onClick={() => { navigate('/services'); closeMobileMenu(); }} className="hover:text-primaryOrange uppercase">OUR SERVICES</li>
+            <li onClick={() => { navigate('/contact'); closeMobileMenu(); }} className="hover:text-primaryOrange uppercase">CONTACT US</li>
           </ul>
-
-          <h3 className="px-5 text-xs font-bold text-gray-400 uppercase tracking-widest mt-6 mb-2">Support</h3>
-          <div 
-            className="px-5 py-3 text-textBlack font-medium border-b border-gray-50 hover:bg-primaryOrange/10 hover:text-primaryOrange cursor-pointer"
-            onClick={() => { navigate('/contact'); setIsMobileMenuOpen(false); }}
-          >
-            Contact Us
-          </div>
         </div>
 
-        {/* Sidebar Footer (Login/Logout) */}
         <div className="p-5 border-t border-gray-100 bg-gray-50">
           {user ? (
-            <button 
-              onClick={() => { logout(); setIsMobileMenuOpen(false); }} 
-              className="w-full flex items-center justify-center gap-2 bg-red-100 text-red-600 py-3 rounded-xl font-bold hover:bg-red-200 transition-colors"
-            >
-              <LogOut className="w-5 h-5" /> Logout
-            </button>
+            <button onClick={() => { logout(); closeMobileMenu(); }} className="w-full bg-red-50 text-red-600 py-3 rounded-xl font-bold">Logout</button>
           ) : (
-            <button 
-              onClick={() => { navigate('/login'); setIsMobileMenuOpen(false); }} 
-              className="w-full flex items-center justify-center gap-2 bg-textBlack text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition-colors"
-            >
-              <User className="w-5 h-5" /> Login / Register
-            </button>
+            <button onClick={() => { navigate('/login'); closeMobileMenu(); }} className="w-full bg-textBlack text-white py-3 rounded-xl font-bold">Login / Register</button>
           )}
         </div>
       </div>

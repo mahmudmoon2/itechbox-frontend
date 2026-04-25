@@ -9,9 +9,10 @@ export const StoreProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
-  
-  // 👉 ১. নতুন স্টেট: ব্যানার রাখার জন্য
   const [banners, setBanners] = useState([]); 
+  
+  // 👉 নতুন স্টেট: জ্যাঙ্গো থেকে আসা ডাইনামিক সেকশন রাখার জন্য
+  const [homeSections, setHomeSections] = useState([]); 
   
   const [loading, setLoading] = useState(true);
   
@@ -25,21 +26,24 @@ export const StoreProvider = ({ children }) => {
     const fetchInitialData = async () => {
       try {
         setLoading(true);
-        // 👉 ২. banners এর API কল যোগ করা হলো
-        const [productsRes, categoriesRes, brandsRes, bannersRes] = await Promise.all([
+        
+        // 👉 home-sections এর নতুন API কল যোগ করা হলো
+        const [productsRes, categoriesRes, brandsRes, bannersRes, sectionsRes] = await Promise.all([
           axios.get(`${BASE_URL}/products/`),
           axios.get(`${BASE_URL}/categories/`),
           axios.get(`${BASE_URL}/brands/`),
-          axios.get(`${BASE_URL}/banners/`) 
+          axios.get(`${BASE_URL}/banners/`),
+          axios.get(`${BASE_URL}/home-sections/`) // <--- নতুন API কল
         ]);
         
-        // পেজিনেশন থাকলেও যেন কাজ করে তাই .results চেক করা হয়েছে
+        // পেজিনেশন থাকলেও যেন কাজ করে তাই .results চেক করা হয়েছে
         setProducts(productsRes.data.results || productsRes.data);
         setCategories(categoriesRes.data.results || categoriesRes.data);
         setBrands(brandsRes.data.results || brandsRes.data);
-        
-        // 👉 ৩. ব্যানার সেভ করা হলো
         setBanners(bannersRes.data.results || bannersRes.data); 
+        
+        // 👉 ডাইনামিক সেকশন সেভ করা হলো
+        setHomeSections(sectionsRes.data.results || sectionsRes.data); 
         
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -87,7 +91,8 @@ export const StoreProvider = ({ children }) => {
 
   const contextValue = {
     products, categories, brands, loading,
-    banners, // 👉 ৪. ব্যানারগুলো পুরো অ্যাপে পাস করে দেওয়া হলো
+    banners, 
+    homeSections, // 👉 অ্যাপে ব্যবহারের জন্য পাস করে দেওয়া হলো
     cart, addToCart, removeFromCart, updateQuantity, cartTotal,
     isCartOpen, setIsCartOpen
   };

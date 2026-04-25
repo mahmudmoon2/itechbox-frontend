@@ -1,32 +1,45 @@
 // src/components/ProductSection.jsx
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Navigation } from 'swiper/modules';
 import ProductCard from './ProductCard';
+import 'swiper/css';
+import 'swiper/css/navigation';
 
-const ProductSection = ({ title }) => {
-  // ডামি প্রোডাক্ট ডেটা
-  const dummyProducts = [
-    { id: 1, name: "iPhone 16 Pro Max - 256GB", brand: "Apple", price: 155000, oldPrice: 165000, discount: 6 },
-    { id: 2, name: "Samsung Galaxy S24 Ultra - 512GB", brand: "Samsung", price: 142000, oldPrice: null, discount: 0 },
-    { id: 3, name: "Sony WH-1000XM5 Wireless Headphones", brand: "Sony", price: 38500, oldPrice: 42000, discount: 8 },
-    { id: 4, name: "MacBook Air M3 - 16GB/512GB", brand: "Apple", price: 175000, oldPrice: null, discount: 0 },
-    { id: 5, name: "Google Pixel 8 Pro - 128GB", brand: "Google", price: 95000, oldPrice: 105000, discount: 9 },
-  ];
+const ProductSection = ({ title, productsList }) => {
+  if (!productsList || productsList.length === 0) return null;
 
   return (
     <section className="container mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-black text-textBlack tracking-tight">{title}</h2>
-        <button className="text-sm font-bold text-primaryOrange hover:underline">
-          View All
-        </button>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-black text-textBlack tracking-tight uppercase italic">{title}</h2>
+        <Link to={`/collection/${title.toLowerCase().replace(/\s+/g, '-')}`} className="text-primaryOrange font-bold hover:underline text-sm">
+          VIEW ALL
+        </Link>
       </div>
 
-      {/* Grid Layout for Products */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
-        {dummyProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
+      <Swiper
+        modules={[Autoplay, Navigation]}
+        spaceBetween={15}
+        slidesPerView={1.5}
+        autoplay={{
+          delay: 2500, // ২.৫ সেকেন্ড পর পর নিজে নিজেই স্লাইড হবে
+          disableOnInteraction: false,
+        }}
+        breakpoints={{
+          640: { slidesPerView: 2.5 },
+          1024: { slidesPerView: 4.5 },
+          1280: { slidesPerView: 5.5 },
+        }}
+        className="product-swiper"
+      >
+        {productsList.map(product => (
+          <SwiperSlide key={product.id}>
+            <ProductCard product={product} />
+          </SwiperSlide>
         ))}
-      </div>
+      </Swiper>
     </section>
   );
 };
