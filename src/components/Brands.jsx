@@ -16,34 +16,37 @@ const Brands = () => {
         <h2 className="text-2xl font-black text-textBlack tracking-tight">Popular Brands</h2>
       </div>
       
-      {/* আগের গ্রিডের বদলে Swiper ব্যবহার করা হয়েছে */}
       <Swiper
         modules={[Autoplay]}
         spaceBetween={15}
-        slidesPerView={2.5} // মোবাইলে আড়াইটা ব্র্যান্ড দেখাবে
+        slidesPerView={2.5} 
         autoplay={{
-          delay: 2000, // ২ সেকেন্ড পর পর স্লাইড হবে
+          delay: 2000, 
           disableOnInteraction: false,
+          pauseOnMouseEnter: true, // মাউস রাখলে স্লাইডার সাময়িকভাবে থেমে যাবে
         }}
         breakpoints={{
           640: { slidesPerView: 4 },
           768: { slidesPerView: 5 },
           1024: { slidesPerView: 6 },
-          1280: { slidesPerView: 8 }, // পিসিতে ৮টা দেখাবে
+          1280: { slidesPerView: 8 }, 
         }}
-        className="w-full"
+        // হোভার করার সময় শ্যাডো যেন কেটে না যায় তাই নিচে একটু প্যাডিং দেওয়া হলো
+        className="w-full !pb-4 pt-2" 
       >
         {brands.map((brand) => (
           <SwiperSlide key={brand.id}>
-            <div className="bg-white border border-gray-200 rounded-xl py-6 px-4 flex items-center justify-center cursor-pointer hover:border-primaryOrange hover:shadow-md transition-all group h-24">
+            {/* hover:scale-105 এবং hover:-translate-y-1 দিয়ে বক্সটি বড় এবং উপরে ওঠার ইফেক্ট দেওয়া হয়েছে */}
+            <div className="bg-white border border-gray-200 rounded-xl py-6 px-4 flex items-center justify-center cursor-pointer hover:border-primaryOrange hover:shadow-lg hover:-translate-y-1 hover:scale-105 transition-all duration-300 group h-24">
               {brand.logo ? (
                 <img 
                   src={brand.logo} 
                   alt={brand.name} 
-                  className="max-h-10 w-auto object-contain opacity-60 group-hover:opacity-100 grayscale group-hover:grayscale-0 transition-all duration-300" 
+                  // লোগোটিও হোভার করলে সামান্য বড় হবে
+                  className="max-h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-110" 
                 />
               ) : (
-                <span className="font-bold text-gray-500 group-hover:text-primaryOrange transition-colors text-center text-sm md:text-base">
+                <span className="font-bold text-gray-500 group-hover:text-primaryOrange transition-colors text-center text-sm md:text-base inline-block group-hover:scale-110 duration-300">
                   {brand.name}
                 </span>
               )}

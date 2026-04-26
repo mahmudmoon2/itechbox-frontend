@@ -1,3 +1,4 @@
+// src/components/CampaignBanner.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -6,7 +7,8 @@ const CampaignBanner = ({ data }) => {
 
   return (
     <section className="container mx-auto px-4 py-10">
-      <div className="relative h-[300px] md:h-[400px] w-full rounded-3xl overflow-hidden cursor-pointer group shadow-lg bg-textBlack">
+      {/* এখানে h-[400px] এবং md:h-[500px] করে হাইট বাড়ানো হয়েছে */}
+      <div className="relative h-[400px] md:h-[500px] w-full rounded-3xl overflow-hidden cursor-pointer group shadow-lg bg-textBlack">
         
         <img 
           src={data.image} 

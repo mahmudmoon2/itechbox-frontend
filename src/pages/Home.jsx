@@ -32,16 +32,19 @@ const Home = () => {
       
       {/* ১. হিরো স্লাইডার, ক্যাটাগরি এবং ব্র্যান্ডস */}
       <Hero data={heroBanners} />
-      <CategoryGrid />
+      
       <Brands />
 
       {/* ২. Exclusive Products (যদি থাকে) */}
       {exclusiveProducts.length > 0 && (
         <ProductSection title="Exclusive Products" productsList={exclusiveProducts} />
       )}
+      
 
       {/* ৩. ক্যাম্পেইন ব্যানার */}
       {campaignBanner && <CampaignBanner data={campaignBanner} />}
+
+      <CategoryGrid />
 
       {/* ৪. Top Deals (যদি থাকে) */}
       {topDealProducts.length > 0 && (
