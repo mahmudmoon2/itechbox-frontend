@@ -13,6 +13,7 @@ import Search from './pages/Search';         // সার্চ রেজাল�
 import Contact from './components/Contact';         // যোগাযোগ পেজ (যদি থাকে)
 import Services from './pages/Services'; // এই লাইনটি যোগ করুন
 import About from './pages/About';
+import ProductDetails from './pages/ProductDetails';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/services" element={<Services />} />
             <Route path="/about" element={<About />} />
+            <Route path="/product/:slug" element={<ProductDetails />} />
 
             {/* View All / Collection Routes */}
             <Route path="/products" element={<Collection type="all" />} />
