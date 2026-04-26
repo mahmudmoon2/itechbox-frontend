@@ -1,7 +1,7 @@
 // src/pages/ProductDetails.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Zap, Check, ChevronRight, Minus, Plus, MessageCircle, BarChart2, Truck } from 'lucide-react';
+import { ShoppingCart, Zap, Check, ChevronRight, Minus, Plus, MessageCircle, Truck } from 'lucide-react';
 import axios from 'axios';
 import { StoreContext } from '../context/StoreContext';
 
@@ -16,7 +16,7 @@ const ProductDetails = () => {
   const [mainImage, setMainImage] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState('specification'); // Tabs: specification, description, warranty
+  const [activeTab, setActiveTab] = useState('specification'); // Tabs
 
   // API Call
   useEffect(() => {
@@ -24,7 +24,6 @@ const ProductDetails = () => {
     const fetchProductDetails = async () => {
       try {
         setLoading(true);
-        // আপনার API লিংক
         const response = await axios.get(`http://127.0.0.1:8000/api/store/products/${slug}/`);
         const data = response.data;
         setProduct(data);
@@ -35,7 +34,6 @@ const ProductDetails = () => {
           setMainImage(data.image);
         }
 
-        // যদি কালার অপশন থাকে, ডিফল্টভাবে প্রথম কালার সিলেক্ট করা
         if (data.colors && data.colors.length > 0) {
           setSelectedColor(data.colors[0]);
         }
@@ -95,7 +93,6 @@ const ProductDetails = () => {
             
             {/* Left: Image Gallery */}
             <div className="w-full lg:w-[45%] p-6 md:p-8 border-b lg:border-b-0 lg:border-r border-gray-100">
-              {/* Main Image */}
               <div className="relative rounded-2xl bg-gray-50 aspect-square flex items-center justify-center mb-6">
                 <img 
                   src={mainImage} 
@@ -125,14 +122,11 @@ const ProductDetails = () => {
             {/* Right: Product Details */}
             <div className="w-full lg:w-[55%] p-6 md:p-8 flex flex-col">
               
-              {/* Brand & Compare */}
-              <div className="flex items-center justify-between mb-2">
+              {/* Brand (Compare Button Removed) */}
+              <div className="mb-2">
                 <span className="text-red-500 font-bold uppercase text-xs tracking-wider">
                   {product.brand_name || product.brand || "Brand"}
                 </span>
-                <button className="flex items-center gap-1 text-sm text-primaryOrange font-medium hover:underline">
-                  <BarChart2 className="w-4 h-4" /> Add to Compare
-                </button>
               </div>
               
               <h1 className="text-2xl md:text-3xl font-bold text-textBlack leading-tight mb-4">
@@ -160,7 +154,7 @@ const ProductDetails = () => {
                 </div>
               </div>
 
-              {/* Colors (If available from Django) */}
+              {/* Colors */}
               {product.colors && product.colors.length > 0 && (
                 <div className="mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
                   <span className="font-bold text-textBlack text-sm block mb-3">Color:</span>
@@ -173,7 +167,6 @@ const ProductDetails = () => {
                           selectedColor?.id === colorObj.id ? 'border-primaryOrange text-primaryOrange shadow-sm' : 'border-gray-200 text-gray-600 hover:border-gray-300'
                         }`}
                       >
-                        {/* কালার ডট দেখানোর জন্য */}
                         <span className="w-3 h-3 rounded-full border border-gray-200" style={{ backgroundColor: colorObj.hex_code || colorObj.name.toLowerCase() }}></span>
                         {colorObj.name}
                       </button>
@@ -265,27 +258,21 @@ const ProductDetails = () => {
             {/* Tab Contents */}
             <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 min-h-[400px]">
               
-              {/* Specification Tab */}
+              {/* Specification Tab - FIXED HTML RENDERING */}
               {activeTab === 'specification' && (
                 <div>
                   <h3 className="text-xl font-bold text-textBlack mb-6">Specification</h3>
                   {product.specifications ? (
-                    <div className="w-full border border-gray-200 rounded-lg overflow-hidden">
-                      {/* Assuming specifications is an object or array of objects from Django */}
-                      {Object.entries(product.specifications).map(([key, value], index) => (
-                        <div key={index} className="flex flex-col sm:flex-row border-b border-gray-200 last:border-0 bg-white hover:bg-gray-50">
-                          <div className="sm:w-1/3 p-4 border-b sm:border-b-0 sm:border-r border-gray-200 text-gray-500 font-medium capitalize">{key}</div>
-                          <div className="sm:w-2/3 p-4 font-bold text-textBlack">{value}</div>
-                        </div>
-                      ))}
-                    </div>
+                    <div className="prose max-w-none text-gray-600 w-full"
+                      dangerouslySetInnerHTML={{ __html: product.specifications }} 
+                    />
                   ) : (
                     <p className="text-gray-500">No specifications available.</p>
                   )}
                 </div>
               )}
 
-              {/* Description Tab (Rich HTML from Django) */}
+              {/* Description Tab */}
               {activeTab === 'description' && (
                 <div>
                   <h3 className="text-xl font-bold text-textBlack mb-6">Descriptions</h3>
@@ -311,7 +298,6 @@ const ProductDetails = () => {
           <div className="w-full lg:w-1/4">
             <h3 className="text-2xl font-bold text-textBlack mb-6">Recently Viewed</h3>
             
-            {/* Dummy Recently Viewed Card (Later you can map from LocalStorage or Context) */}
             <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex gap-4 hover:shadow-md transition cursor-pointer" onClick={() => window.scrollTo(0,0)}>
               <div className="w-20 h-20 bg-gray-50 rounded-xl flex items-center justify-center shrink-0 border border-gray-100">
                 <img src={mainImage} alt="recent" className="max-h-full p-2 object-contain" />
@@ -325,7 +311,6 @@ const ProductDetails = () => {
                 </span>
               </div>
             </div>
-            {/* You can duplicate the card above or map over a recentlyViewed array */}
           </div>
 
         </div>

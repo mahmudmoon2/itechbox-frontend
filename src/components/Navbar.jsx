@@ -53,24 +53,28 @@ const Navbar = () => {
             <Menu className="w-8 h-8" />
           </button>
 
-          {/* 2. Logo & Techy Brand Name */}
+          {/* 2. Logo & Techy Brand Name (Updated for Desktop) */}
           <div 
             className="flex-shrink-0 cursor-pointer flex items-center gap-3 lg:mr-10 py-1 group" 
             onClick={() => navigate('/')}
           >
-            {/* Circular Logo */}
-            <img 
-              src="/logo.png" 
-              alt="iTechBox Logo" 
-              className="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover transition-transform duration-300 group-hover:scale-105 border border-gray-700 shadow-lg" 
-            />
+            {/* Circular Logo with Glow Effect */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-primaryOrange blur-md opacity-30 group-hover:opacity-60 transition-opacity duration-300 rounded-full"></div>
+              <img 
+                src="/logo.png" 
+                alt="iTechBox Logo" 
+                className="relative h-10 w-10 md:h-12 md:w-12 rounded-full object-cover transition-all duration-300 group-hover:scale-105 border-2 border-transparent group-hover:border-primaryOrange/50 shadow-lg z-10 bg-white" 
+              />
+            </div>
+            
             {/* Techy Style Text */}
-            <div className="flex items-center">
-              <span className="text-xl md:text-2xl font-black tracking-tighter text-white uppercase">
-                iTech<span className="text-primaryOrange">BOX</span>
+            <div className="flex flex-col justify-center">
+              <span className="text-xl md:text-[22px] font-black tracking-tight text-white leading-none">
+                iTech<span className="text-primaryOrange drop-shadow-[0_0_8px_rgba(255,102,0,0.5)]">BOX</span>
               </span>
-              <span className="ml-1.5 md:ml-2 bg-primaryOrange/10 text-primaryOrange border border-primaryOrange/30 text-[10px] md:text-xs font-mono font-bold px-1.5 py-0.5 rounded uppercase tracking-widest shadow-sm">
-                BD
+              <span className="text-[10px] text-gray-400 font-medium tracking-[0.2em] uppercase mt-0.5 ml-0.5">
+                Bangladesh
               </span>
             </div>
           </div>
@@ -85,7 +89,6 @@ const Navbar = () => {
               HOME
             </div>
 
-            {/* About Us (Dropdown removed) */}
             <div 
               onClick={() => navigate('/about')} 
               className={`cursor-pointer transition-colors hover:text-primaryOrange ${isActive('/about') ? 'text-primaryOrange' : 'text-white'}`}
@@ -235,16 +238,19 @@ const Navbar = () => {
       >
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
           
-          {/* Mobile Menu Logo & Text */}
-          <div className="flex items-center gap-2">
+          {/* Mobile Menu Logo & Text (Updated) */}
+          <div className="flex items-center gap-3">
             <img 
               src="/logo.png" 
               alt="Logo" 
-              className="h-10 w-10 rounded-full object-cover border border-gray-200" 
+              className="h-10 w-10 rounded-full object-cover border border-gray-200 shadow-sm" 
             />
-            <div className="flex items-center">
-              <span className="text-xl font-black tracking-tighter text-textBlack uppercase">
+            <div className="flex flex-col">
+              <span className="text-xl font-black tracking-tight text-textBlack leading-none">
                 iTech<span className="text-primaryOrange">BOX</span>
+              </span>
+              <span className="text-[10px] text-gray-500 font-bold tracking-widest uppercase mt-0.5">
+                Bangladesh
               </span>
             </div>
           </div>
