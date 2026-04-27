@@ -55,7 +55,22 @@ const Home = () => {
 
       {/* ৫. মিড প্রোমো ব্যানার এবং ফিচারড গ্রিড */}
       <MidPromo leftData={midLeftBanner} rightData={midRightBanner} />
+
+      {/* ৪. Top Deals (যদি থাকে) */}
+      {topDealProducts.length > 0 && (
+        <div className="bg-white py-10 shadow-sm border-y border-gray-100 mt-4">
+          <ProductSection title="Top Deals" productsList={topDealProducts} />
+        </div>
+      )}
+
       <FeaturedGrid large={featLarge} smallTop={featSmallTop} smallBottom={featSmallBottom} />
+
+      {/* ৪. Top Deals (যদি থাকে) */}
+      {topDealProducts.length > 0 && (
+        <div className="bg-white py-10 shadow-sm border-y border-gray-100 mt-4">
+          <ProductSection title="Top Deals" productsList={topDealProducts} />
+        </div>
+      )}
 
       {/* ৬. ম্যাজিক অংশ! জ্যাঙ্গো এডমিন থেকে তৈরি করা ডাইনামিক সেকশনগুলো */}
       {/* এডমিন প্যানেলে আপনি যতগুলো সেকশন বানাবেন, এখানে সেগুলো একটার পর একটা অটোমেটিক চলে আসবে */}
