@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+
 // src/components/Navbar.jsx
 import React, { useState, useContext } from 'react';
 import { Search, ShoppingCart, User, LogOut, Menu, X, ChevronDown, ChevronRight } from 'lucide-react';

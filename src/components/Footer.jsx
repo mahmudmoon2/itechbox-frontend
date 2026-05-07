@@ -116,10 +116,7 @@ const Footer = () => {
           <div className="mt-6 md:mt-0 flex items-center gap-3">
             <span className="text-sm mr-2 hidden sm:block">We Accept:</span>
             <div className="flex gap-2">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/1200px-Mastercard_2019_logo.svg.png" alt="Mastercard" className="h-7 w-auto bg-white px-2 py-1 rounded-md opacity-80 hover:opacity-100 transition-opacity" />
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" className="h-7 w-auto bg-white px-2 py-1 rounded-md opacity-80 hover:opacity-100 transition-opacity" />
-              {/* bKash Icon (using a placeholder generic mobile banking style if URL is broken, but normally works) */}
-              <img src="https://scripts.payter.com/img/brands/bkash.png" alt="bKash" className="h-7 w-auto bg-white px-2 py-1 rounded-md opacity-80 hover:opacity-100 transition-opacity object-contain" onError={(e)=>{e.target.src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/BKash_logo.svg/1200px-BKash_logo.svg.png"}} />
+             
             </div>
           </div>
         </div>
