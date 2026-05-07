@@ -5,9 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 const Hero = ({ data }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const navigate = useNavigate(); // নেভিগেশনের জন্য
+  const navigate = useNavigate();
 
-  // অটো-স্লাইডার লজিক
   useEffect(() => {
     if (data && data.length > 0) {
       const timer = setInterval(() => {
@@ -22,20 +21,20 @@ const Hero = ({ data }) => {
   const nextSlide = () => setCurrentSlide(currentSlide === data.length - 1 ? 0 : currentSlide + 1);
   const prevSlide = () => setCurrentSlide(currentSlide === 0 ? data.length - 1 : currentSlide - 1);
 
-  // বাটনে ক্লিক করলে লিংকে যাওয়ার লজিক
   const handleButtonClick = (link) => {
     if (!link) {
-      navigate('/products'); // যদি জ্যাঙ্গোতে লিংক দেওয়া না থাকে, ডিফল্টভাবে প্রোডাক্ট পেজে যাবে
+      navigate('/products');
     } else if (link.startsWith('http')) {
       // eslint-disable-next-line react-hooks/immutability
-      window.location.href = link; // বাইরের কোনো লিংক হলে সরাসরি সেখানে যাবে
+      window.location.href = link;
     } else {
-      navigate(link); // ওয়েবসাইটের ভেতরের লিংক হলে রাউটার দিয়ে যাবে (যেমন: /category/gadgets)
+      navigate(link);
     }
   };
 
   return (
-    <div className="relative w-full h-[400px] md:h-[600px] overflow-hidden bg-black group">
+    // w-[80%] এবং mx-auto অ্যাড করা হয়েছে
+    <div className="relative w-[80%] mx-auto h-[400px] md:h-[600px] overflow-hidden bg-black group rounded-3xl mt-4">
       
       {/* Slides */}
       {data.map((slide, index) => {
@@ -56,7 +55,8 @@ const Hero = ({ data }) => {
             
             <div className="absolute inset-0 flex flex-col justify-center items-center md:items-start text-center md:text-left px-10 md:px-24">
               
-              <h1 className={`text-4xl md:text-5xl lg:text-7xl font-black text-white mb-4 drop-shadow-2xl italic tracking-tight transition-all duration-700 ease-out transform ${isActive ? 'opacity-100 translate-y-0 delay-300' : 'opacity-0 translate-y-10'}`}>
+              {/* italic রিমুভ করা হয়েছে */}
+              <h1 className={`text-4xl md:text-5xl lg:text-7xl font-black text-white mb-4 drop-shadow-2xl tracking-tight transition-all duration-700 ease-out transform ${isActive ? 'opacity-100 translate-y-0 delay-300' : 'opacity-0 translate-y-10'}`}>
                 {slide.title}
               </h1>
               
@@ -68,11 +68,10 @@ const Hero = ({ data }) => {
                 </div>
               )}
               
-              {/* অ্যানিমেটেড বাটন + ক্লিক ফাংশন */}
               {slide.button_text && (
                 <div className={`transition-all duration-700 ease-out transform ${isActive ? 'opacity-100 translate-y-0 delay-700' : 'opacity-0 translate-y-10'}`}>
                   <button 
-                    onClick={() => handleButtonClick(slide.button_link)} // এই লাইনটি অ্যাড করা হয়েছে
+                    onClick={() => handleButtonClick(slide.button_link)}
                     className="relative overflow-hidden group/btn bg-primaryOrange text-white px-8 py-3.5 rounded-full font-bold text-lg hover:shadow-[0_0_20px_rgba(255,102,0,0.5)] hover:scale-105 transition-all duration-300"
                   >
                     <span className="relative z-10">{slide.button_text}</span>

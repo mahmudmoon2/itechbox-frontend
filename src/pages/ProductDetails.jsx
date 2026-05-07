@@ -1,7 +1,7 @@
 // src/pages/ProductDetails.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Zap, Check, ChevronRight, Minus, Plus, MessageCircle, Truck } from 'lucide-react';
+import { ShoppingCart, ChevronRight, Minus, Plus, MessageCircle, Truck } from 'lucide-react';
 import axios from 'axios';
 import { StoreContext } from '../context/StoreContext';
 
@@ -14,9 +14,18 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [mainImage, setMainImage] = useState(null);
+  
+  // Variants States
   const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedStorage, setSelectedStorage] = useState(null);
+  const [selectedRegion, setSelectedRegion] = useState(null);
+  
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState('specification'); // Tabs
+  const [activeTab, setActiveTab] = useState('specification');
+
+  // Zoom Effect States
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [zoomPos, setZoomPos] = useState({ x: '50%', y: '50%' });
 
   // API Call
   useEffect(() => {
@@ -34,9 +43,11 @@ const ProductDetails = () => {
           setMainImage(data.image);
         }
 
-        if (data.colors && data.colors.length > 0) {
-          setSelectedColor(data.colors[0]);
-        }
+        if (data.colors && data.colors.length > 0) setSelectedColor(data.colors[0]);
+        // যদি স্টোরেজ ও রিজিয়ন ব্যাকএন্ড থেকে আসে তাহলে ডিফল্ট সিলেক্ট হবে
+        if (data.storages && data.storages.length > 0) setSelectedStorage(data.storages[0]);
+        if (data.regions && data.regions.length > 0) setSelectedRegion(data.regions[0]);
+
       } catch (error) {
         console.error("Error fetching product details:", error);
       } finally {
@@ -46,9 +57,32 @@ const ProductDetails = () => {
     if (slug) fetchProductDetails();
   }, [slug]);
 
-  // Quantity Handlers
+  // Handlers
   const handleDecrease = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
   const handleIncrease = () => setQuantity(prev => prev + 1);
+
+  const handleColorSelect = (colorObj) => {
+    setSelectedColor(colorObj);
+    // কালারের সাথে ইমেজ থাকলে মেইন ইমেজ চেঞ্জ হয়ে যাবে
+    if (colorObj.image) {
+      setMainImage(colorObj.image);
+    }
+  };
+
+  // Image Magnifier Logic
+  const handleMouseMove = (e) => {
+    const { left, top, width, height } = e.target.getBoundingClientRect();
+    const x = ((e.pageX - left) / width) * 100;
+    const y = ((e.pageY - top) / height) * 100;
+    setZoomPos({ x: `${x}%`, y: `${y}%` });
+  };
+
+  // ডামি ডেটা (যদি ব্যাকএন্ড থেকে না আসে তবে ডিজাইনের জন্য এগুলো দেখাবে)
+  const dummyStorages = [{ id: 1, name: '128GB' }, { id: 2, name: '256GB' }, { id: 3, name: '512GB' }];
+  const dummyRegions = [{ id: 1, name: 'CN - Dual SIM' }, { id: 2, name: 'E-Sim JP' }, { id: 3, name: 'E-Sim USA' }, { id: 4, name: 'SIM+eSIM IND' }];
+
+  const availableStorages = product?.storages || dummyStorages;
+  const availableRegions = product?.regions || dummyRegions;
 
   if (loading) {
     return (
@@ -91,25 +125,36 @@ const ProductDetails = () => {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
           <div className="flex flex-col lg:flex-row">
             
-            {/* Left: Image Gallery */}
+            {/* Left: Image Gallery with Zoom */}
             <div className="w-full lg:w-[45%] p-6 md:p-8 border-b lg:border-b-0 lg:border-r border-gray-100">
-              <div className="relative rounded-2xl bg-gray-50 aspect-square flex items-center justify-center mb-6">
+              
+              {/* Magnifier Container */}
+              <div 
+                className="relative rounded-2xl bg-white border border-gray-100 aspect-square flex items-center justify-center mb-6 overflow-hidden cursor-crosshair group"
+                onMouseEnter={() => setIsZoomed(true)}
+                onMouseLeave={() => setIsZoomed(false)}
+                onMouseMove={handleMouseMove}
+              >
                 <img 
                   src={mainImage} 
                   alt={product.name} 
-                  className="max-h-full w-auto object-contain p-4 transition-transform duration-500 hover:scale-105"
+                  className={`w-full h-full object-contain p-4 transition-transform duration-200 ${isZoomed ? '' : 'group-hover:scale-105'}`}
+                  style={isZoomed ? { 
+                    transformOrigin: `${zoomPos.x} ${zoomPos.y}`, 
+                    transform: 'scale(2.5)' // জুমের পরিমাণ
+                  } : {}}
                 />
               </div>
 
               {/* Thumbnails */}
               {product.images && product.images.length > 0 && (
-                <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide justify-center">
                   {product.images.map((imgObj, idx) => (
                     <div 
                       key={idx}
                       onClick={() => setMainImage(imgObj.image)}
                       className={`cursor-pointer flex-shrink-0 w-20 h-20 rounded-xl border-2 flex items-center justify-center bg-white overflow-hidden transition-all ${
-                        mainImage === imgObj.image ? 'border-primaryOrange' : 'border-gray-200 hover:border-gray-300'
+                        mainImage === imgObj.image ? 'border-primaryOrange shadow-sm' : 'border-gray-200 hover:border-primaryOrange/50'
                       }`}
                     >
                       <img src={imgObj.image} alt="thumbnail" className="max-h-full p-2 object-contain" />
@@ -122,14 +167,13 @@ const ProductDetails = () => {
             {/* Right: Product Details */}
             <div className="w-full lg:w-[55%] p-6 md:p-8 flex flex-col">
               
-              {/* Brand (Compare Button Removed) */}
               <div className="mb-2">
-                <span className="text-red-500 font-bold uppercase text-xs tracking-wider">
-                  {product.brand_name || product.brand || "Brand"}
+                <span className="text-[#0052cc] font-black uppercase text-xs tracking-wider">
+                  {product.brand_name || product.brand || "SAMSUNG"}
                 </span>
               </div>
               
-              <h1 className="text-2xl md:text-3xl font-bold text-textBlack leading-tight mb-4">
+              <h1 className="text-2xl md:text-[32px] font-bold text-textBlack leading-tight mb-4">
                 {product.name}
               </h1>
 
@@ -150,38 +194,85 @@ const ProductDetails = () => {
                 </div>
                 <div className="h-4 w-px bg-gray-300 hidden sm:block"></div>
                 <div className="text-gray-600">
-                  <span className="font-bold text-textBlack">Code:</span> {product.product_code || "N/A"}
+                  <span className="font-bold text-textBlack">Code:</span> {product.product_code || "1-8"}
                 </div>
               </div>
 
-              {/* Colors */}
-              {product.colors && product.colors.length > 0 && (
-                <div className="mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
+              {/* Variants Grid (Color, Region, Storage) */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                
+                {/* Color Box */}
+                <div className="border border-gray-200 p-4 rounded-xl">
                   <span className="font-bold text-textBlack text-sm block mb-3">Color:</span>
-                  <div className="flex gap-3 flex-wrap">
-                    {product.colors.map((colorObj, idx) => (
+                  <div className="flex gap-2 flex-wrap">
+                    {product.colors && product.colors.length > 0 ? (
+                      product.colors.map((colorObj, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => handleColorSelect(colorObj)}
+                          className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-[13px] font-medium transition-all bg-white ${
+                            selectedColor?.id === colorObj.id ? 'border-primaryOrange text-textBlack ring-1 ring-primaryOrange' : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                          }`}
+                        >
+                          <span className="w-3.5 h-3.5 rounded-full border border-gray-200 shadow-inner" style={{ backgroundColor: colorObj.hex_code || colorObj.name.toLowerCase() }}></span>
+                          {colorObj.name}
+                        </button>
+                      ))
+                    ) : (
+                      <span className="text-sm text-gray-500">Default Color</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Region Box */}
+                <div className="border border-gray-200 p-4 rounded-xl">
+                  <span className="font-bold text-textBlack text-sm block mb-3">Region:</span>
+                  <div className="flex gap-2 flex-wrap">
+                    {availableRegions.map((region, idx) => (
                       <button
                         key={idx}
-                        onClick={() => setSelectedColor(colorObj)}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all bg-white ${
-                          selectedColor?.id === colorObj.id ? 'border-primaryOrange text-primaryOrange shadow-sm' : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                        onClick={() => setSelectedRegion(region)}
+                        className={`px-3 py-1.5 rounded-full border text-[13px] font-medium transition-all bg-white ${
+                          selectedRegion?.id === region.id ? 'border-primaryOrange text-primaryOrange ring-1 ring-primaryOrange' : 'border-gray-200 text-gray-600 hover:border-gray-300'
                         }`}
                       >
-                        <span className="w-3 h-3 rounded-full border border-gray-200" style={{ backgroundColor: colorObj.hex_code || colorObj.name.toLowerCase() }}></span>
-                        {colorObj.name}
+                        {region.name}
                       </button>
                     ))}
                   </div>
                 </div>
-              )}
+
+                {/* Storage Box */}
+                <div className="border border-gray-200 p-4 rounded-xl md:col-span-1">
+                  <span className="font-bold text-textBlack text-sm block mb-3">Storage:</span>
+                  <div className="flex gap-2 flex-wrap">
+                    {availableStorages.map((storage, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedStorage(storage)}
+                        className={`px-4 py-1.5 rounded-full border text-[13px] font-bold transition-all bg-white ${
+                          selectedStorage?.id === storage.id ? 'border-primaryOrange text-primaryOrange ring-1 ring-primaryOrange' : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                        }`}
+                      >
+                        {storage.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Warranty Info Text */}
+              <div className="mb-6 text-[15px] font-bold text-textBlack">
+                1 Year Official Warranty Support <span className="text-gray-500 font-medium">(Except USA Variant)</span>
+              </div>
 
               {/* Quantity Selector */}
               <div className="mb-6">
                 <span className="font-bold text-textBlack text-sm block mb-3">Select Quantity:</span>
-                <div className="flex items-center bg-gray-100 rounded-full w-max border border-gray-200">
-                  <button onClick={handleDecrease} className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-primaryOrange transition"><Minus className="w-4 h-4" /></button>
+                <div className="flex items-center bg-gray-50 rounded-full w-max border border-gray-200">
+                  <button onClick={handleDecrease} className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-primaryOrange transition bg-white rounded-l-full border-r border-gray-200"><Minus className="w-4 h-4" /></button>
                   <span className="w-12 text-center font-bold text-textBlack">{quantity}</span>
-                  <button onClick={handleIncrease} className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-primaryOrange transition"><Plus className="w-4 h-4" /></button>
+                  <button onClick={handleIncrease} className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-primaryOrange transition bg-white rounded-r-full border-l border-gray-200"><Plus className="w-4 h-4" /></button>
                 </div>
               </div>
 
@@ -189,13 +280,13 @@ const ProductDetails = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <button 
                   onClick={() => navigate('/checkout')}
-                  className="bg-primaryOrange hover:bg-[#ff7a00] text-white font-bold py-3.5 rounded-full transition-colors shadow-md flex justify-center items-center gap-2"
+                  className="bg-primaryOrange hover:bg-[#e66a00] text-white font-bold py-3.5 rounded-full transition-colors shadow-md flex justify-center items-center gap-2"
                 >
                   Shop Now
                 </button>
                 <button 
-                  onClick={() => addToCart({...product, quantity, selectedColor})}
-                  className="bg-white border-2 border-gray-200 text-textBlack hover:border-primaryOrange hover:text-primaryOrange font-bold py-3.5 rounded-full transition-colors flex justify-center items-center gap-2"
+                  onClick={() => addToCart({...product, quantity, selectedColor, selectedStorage, selectedRegion})}
+                  className="bg-white border-2 border-gray-200 text-textBlack hover:border-textBlack font-bold py-3.5 rounded-full transition-colors flex justify-center items-center gap-2"
                 >
                   <ShoppingCart className="w-5 h-5" /> Add To Cart
                 </button>
@@ -203,14 +294,16 @@ const ProductDetails = () => {
 
               {/* EMI & WhatsApp */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 text-sm font-medium">
-                <div className="flex items-center gap-2 bg-gray-50 border border-gray-100 px-4 py-3 rounded-xl">
-                  <span className="text-gray-500">%</span> 
-                  <span className="text-gray-700">EMI Available</span>
-                  {product.emi_available && <a href="#" className="text-textBlack underline ml-auto font-bold">View Plans</a>}
+                <div className="flex items-center justify-between bg-orange-50 border border-orange-100 px-4 py-3 rounded-xl">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-500">%</span> 
+                    <span className="text-gray-700">EMI Available</span>
+                  </div>
+                  <a href="#" className="text-textBlack underline font-bold">View Plans</a>
                 </div>
                 <button 
                   onClick={() => window.open(`https://wa.me/8801730789571?text=Hi, I am interested in ${product.name}`, '_blank')}
-                  className="flex items-center gap-2 bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 px-4 py-3 rounded-xl transition-colors"
+                  className="flex items-center justify-center gap-2 bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 px-4 py-3 rounded-xl transition-colors"
                 >
                   <MessageCircle className="w-5 h-5 text-green-600" /> Whatsapp
                 </button>
@@ -258,7 +351,7 @@ const ProductDetails = () => {
             {/* Tab Contents */}
             <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 min-h-[400px]">
               
-              {/* Specification Tab - FIXED HTML RENDERING */}
+              {/* Specification Tab */}
               {activeTab === 'specification' && (
                 <div>
                   <h3 className="text-xl font-bold text-textBlack mb-6">Specification</h3>

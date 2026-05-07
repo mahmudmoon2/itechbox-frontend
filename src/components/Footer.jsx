@@ -1,71 +1,107 @@
 // src/components/Footer.jsx
 import React from 'react';
-import { MapPin, Phone, Mail } from 'lucide-react'; // UI আইকনগুলো Lucide থেকে
-import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa'; // ব্র্যান্ড আইকনগুলো react-icons থেকে
+import { MapPin, Phone, Mail, ChevronRight } from 'lucide-react'; 
+import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa'; 
 
 const Footer = () => {
   return (
-    <footer className="bg-textBlack text-white pt-16 pb-8 border-t-4 border-primaryOrange">
-      <div className="container mx-auto px-4 lg:px-8">
+    <footer className="bg-textBlack text-white pt-20 pb-8 border-t-[5px] border-primaryOrange relative overflow-hidden">
+      
+      {/* Background Decor (Optional glow) */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none opacity-20">
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-primaryOrange rounded-full blur-[120px]"></div>
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-gray-600 rounded-full blur-[120px]"></div>
+      </div>
+
+      <div className="container mx-auto px-4 lg:px-8 relative z-10">
         
         {/* Main Footer Content Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-16 mb-16">
           
-          {/* Brand Info */}
-          <div className="space-y-4">
-            <h2 className="text-3xl font-black tracking-tight italic mb-6">
-              <span className="text-white">iTech</span>
-              <span className="text-primaryOrange">Box</span>
-            </h2>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              Your premium destination for authentic gadgets, smartphones, and accessories in Bangladesh. We bring the latest tech right to your doorstep.
+          {/* 1. Brand Info */}
+          <div className="space-y-6">
+            {/* Logo Section */}
+            <div className="flex items-center gap-3">
+              <img 
+                src="/logo.png" 
+                alt="iTechBox Logo" 
+                className="h-12 w-12 rounded-full object-cover border border-gray-700 bg-white" 
+              />
+              <div className="flex flex-col justify-center">
+                <span className="text-[26px] font-black tracking-tight text-white leading-none uppercase">
+                  iTech<span className="text-primaryOrange">BOX</span>
+                </span>
+                <span className="text-[11px] text-gray-400 font-bold tracking-[0.2em] uppercase mt-1">
+                  Bangladesh
+                </span>
+              </div>
+            </div>
+            
+            <p className="text-gray-400 text-[15px] leading-relaxed font-medium pr-4">
+              Your premium destination for authentic gadgets, smartphones, and accessories. We bring the latest tech right to your doorstep.
             </p>
-            <div className="flex space-x-4 pt-4">
-              <a href="#" className="bg-gray-800 p-2.5 rounded-full hover:bg-primaryOrange transition-colors"><FaFacebookF className="w-4 h-4" /></a>
-              <a href="#" className="bg-gray-800 p-2.5 rounded-full hover:bg-primaryOrange transition-colors"><FaInstagram className="w-4 h-4" /></a>
-              <a href="#" className="bg-gray-800 p-2.5 rounded-full hover:bg-primaryOrange transition-colors"><FaTwitter className="w-4 h-4" /></a>
-              <a href="#" className="bg-gray-800 p-2.5 rounded-full hover:bg-primaryOrange transition-colors"><FaYoutube className="w-4 h-4" /></a>
+            
+            <div className="flex space-x-3 pt-2">
+              <a href="#" className="bg-white/5 border border-white/10 p-3 rounded-full hover:bg-primaryOrange hover:border-primaryOrange text-gray-300 hover:text-white transition-all duration-300 hover:-translate-y-1 shadow-lg"><FaFacebookF className="w-4 h-4" /></a>
+              <a href="#" className="bg-white/5 border border-white/10 p-3 rounded-full hover:bg-primaryOrange hover:border-primaryOrange text-gray-300 hover:text-white transition-all duration-300 hover:-translate-y-1 shadow-lg"><FaInstagram className="w-4 h-4" /></a>
+              <a href="#" className="bg-white/5 border border-white/10 p-3 rounded-full hover:bg-primaryOrange hover:border-primaryOrange text-gray-300 hover:text-white transition-all duration-300 hover:-translate-y-1 shadow-lg"><FaTwitter className="w-4 h-4" /></a>
+              <a href="#" className="bg-white/5 border border-white/10 p-3 rounded-full hover:bg-primaryOrange hover:border-primaryOrange text-gray-300 hover:text-white transition-all duration-300 hover:-translate-y-1 shadow-lg"><FaYoutube className="w-4 h-4" /></a>
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* 2. Quick Links */}
           <div>
-            <h3 className="text-lg font-bold mb-6 text-white uppercase tracking-wider">Quick Links</h3>
-            <ul className="space-y-3 text-sm text-gray-400">
-              <li className="hover:text-primaryOrange cursor-pointer transition-colors">About Us</li>
-              <li className="hover:text-primaryOrange cursor-pointer transition-colors">Store Locator</li>
-              <li className="hover:text-primaryOrange cursor-pointer transition-colors">EMI Policy</li>
-              <li className="hover:text-primaryOrange cursor-pointer transition-colors">Privacy Policy</li>
-              <li className="hover:text-primaryOrange cursor-pointer transition-colors">Terms & Conditions</li>
+            <h3 className="text-xl font-bold mb-8 text-white uppercase tracking-wider flex items-center gap-2">
+              <span className="w-2 h-2 bg-primaryOrange rounded-full"></span> Quick Links
+            </h3>
+            <ul className="space-y-4 text-[15px] text-gray-400 font-medium">
+              {['About Us', 'Store Locator', 'EMI Policy', 'Privacy Policy', 'Terms & Conditions'].map((link, idx) => (
+                <li key={idx} className="group flex items-center cursor-pointer">
+                  <ChevronRight className="w-4 h-4 text-primaryOrange opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300 ease-out" />
+                  <span className="group-hover:text-primaryOrange transition-colors duration-300">{link}</span>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Customer Support */}
+          {/* 3. Customer Support */}
           <div>
-            <h3 className="text-lg font-bold mb-6 text-white uppercase tracking-wider">Support</h3>
-            <ul className="space-y-3 text-sm text-gray-400">
-              <li className="hover:text-primaryOrange cursor-pointer transition-colors">Track Order</li>
-              <li className="hover:text-primaryOrange cursor-pointer transition-colors">Return Policy</li>
-              <li className="hover:text-primaryOrange cursor-pointer transition-colors">Warranty Claim</li>
-              <li className="hover:text-primaryOrange cursor-pointer transition-colors">FAQs</li>
+            <h3 className="text-xl font-bold mb-8 text-white uppercase tracking-wider flex items-center gap-2">
+              <span className="w-2 h-2 bg-primaryOrange rounded-full"></span> Support
+            </h3>
+            <ul className="space-y-4 text-[15px] text-gray-400 font-medium">
+              {['Track Order', 'Return Policy', 'Warranty Claim', 'FAQs', 'Contact Support'].map((link, idx) => (
+                <li key={idx} className="group flex items-center cursor-pointer">
+                  <ChevronRight className="w-4 h-4 text-primaryOrange opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300 ease-out" />
+                  <span className="group-hover:text-primaryOrange transition-colors duration-300">{link}</span>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {/* 4. Contact Info */}
           <div>
-            <h3 className="text-lg font-bold mb-6 text-white uppercase tracking-wider">Contact Us</h3>
-            <ul className="space-y-4 text-sm text-gray-400">
-              <li className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-primaryOrange flex-shrink-0 mt-0.5" />
-                <span>Level 5, Bashundhara City Shopping Complex, Panthapath, Dhaka</span>
+            <h3 className="text-xl font-bold mb-8 text-white uppercase tracking-wider flex items-center gap-2">
+              <span className="w-2 h-2 bg-primaryOrange rounded-full"></span> Contact Us
+            </h3>
+            <ul className="space-y-6 text-[15px] text-gray-400 font-medium">
+              <li className="flex items-start gap-4 group cursor-pointer">
+                <div className="bg-white/5 p-2.5 rounded-lg group-hover:bg-primaryOrange transition-colors duration-300">
+                  <MapPin className="w-5 h-5 text-primaryOrange group-hover:text-white transition-colors" />
+                </div>
+                <span className="mt-1 group-hover:text-gray-200 transition-colors">Level 6, Bashundhara City Shopping Complex, Panthapath, Dhaka</span>
               </li>
-              <li className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-primaryOrange flex-shrink-0" />
-                <span>+880 1234-567890</span>
+              <li className="flex items-center gap-4 group cursor-pointer">
+                <div className="bg-white/5 p-2.5 rounded-lg group-hover:bg-primaryOrange transition-colors duration-300">
+                  <Phone className="w-5 h-5 text-primaryOrange group-hover:text-white transition-colors" />
+                </div>
+                <span className="group-hover:text-gray-200 transition-colors">+880 1730-789571</span>
               </li>
-              <li className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-primaryOrange flex-shrink-0" />
-                <span>support@itechbox.com</span>
+              <li className="flex items-center gap-4 group cursor-pointer">
+                <div className="bg-white/5 p-2.5 rounded-lg group-hover:bg-primaryOrange transition-colors duration-300">
+                  <Mail className="w-5 h-5 text-primaryOrange group-hover:text-white transition-colors" />
+                </div>
+                <span className="group-hover:text-gray-200 transition-colors">support@itechbox.com</span>
               </li>
             </ul>
           </div>
@@ -73,11 +109,18 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-800 pt-8 mt-8 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500">
-          <p>© {new Date().getFullYear()} iTechBox. All rights reserved.</p>
-          <div className="mt-4 md:mt-0 flex space-x-2">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/1200px-Mastercard_2019_logo.svg.png" alt="Mastercard" className="h-6 bg-white p-1 rounded" />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" className="h-6 bg-white p-1 rounded" />
+        <div className="border-t border-gray-800 pt-8 mt-4 flex flex-col md:flex-row items-center justify-between text-[14px] text-gray-500 font-medium">
+          <p>© {new Date().getFullYear()} iTechBox BD. All rights reserved.</p>
+          
+          {/* Payment Methods */}
+          <div className="mt-6 md:mt-0 flex items-center gap-3">
+            <span className="text-sm mr-2 hidden sm:block">We Accept:</span>
+            <div className="flex gap-2">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/1200px-Mastercard_2019_logo.svg.png" alt="Mastercard" className="h-7 w-auto bg-white px-2 py-1 rounded-md opacity-80 hover:opacity-100 transition-opacity" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" className="h-7 w-auto bg-white px-2 py-1 rounded-md opacity-80 hover:opacity-100 transition-opacity" />
+              {/* bKash Icon (using a placeholder generic mobile banking style if URL is broken, but normally works) */}
+              <img src="https://scripts.payter.com/img/brands/bkash.png" alt="bKash" className="h-7 w-auto bg-white px-2 py-1 rounded-md opacity-80 hover:opacity-100 transition-opacity object-contain" onError={(e)=>{e.target.src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/BKash_logo.svg/1200px-BKash_logo.svg.png"}} />
+            </div>
           </div>
         </div>
 

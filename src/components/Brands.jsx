@@ -3,10 +3,12 @@ import React, { useContext } from 'react';
 import { StoreContext } from '../context/StoreContext';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
+import { useNavigate } from 'react-router-dom'; // নেভিগেশনের জন্য ইমপোর্ট করা হলো
 import 'swiper/css';
 
 const Brands = () => {
   const { brands } = useContext(StoreContext);
+  const navigate = useNavigate(); // নেভিগেট করার হুক
 
   if (!brands || brands.length === 0) return null;
 
@@ -36,13 +38,15 @@ const Brands = () => {
       >
         {brands.map((brand) => (
           <SwiperSlide key={brand.id}>
-            {/* hover:scale-105 এবং hover:-translate-y-1 দিয়ে বক্সটি বড় এবং উপরে ওঠার ইফেক্ট দেওয়া হয়েছে */}
-            <div className="bg-white border border-gray-200 rounded-xl py-6 px-4 flex items-center justify-center cursor-pointer hover:border-primaryOrange hover:shadow-lg hover:-translate-y-1 hover:scale-105 transition-all duration-300 group h-24">
+            {/* onClick ইভেন্ট যোগ করা হয়েছে */}
+            <div 
+              onClick={() => navigate(`/brand/${brand.slug}`)}
+              className="bg-white border border-gray-200 rounded-xl py-6 px-4 flex items-center justify-center cursor-pointer hover:border-primaryOrange hover:shadow-lg hover:-translate-y-1 hover:scale-105 transition-all duration-300 group h-24"
+            >
               {brand.logo ? (
                 <img 
                   src={brand.logo} 
                   alt={brand.name} 
-                  // লোগোটিও হোভার করলে সামান্য বড় হবে
                   className="max-h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-110" 
                 />
               ) : (

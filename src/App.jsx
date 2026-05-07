@@ -14,6 +14,7 @@ import Contact from './components/Contact';         // যোগাযোগ প
 import Services from './pages/Services'; // এই লাইনটি যোগ করুন
 import About from './pages/About';
 import ProductDetails from './pages/ProductDetails';
+import BrandProducts from './pages/BrandProducts';
 
 function App() {
   return (
@@ -30,6 +31,8 @@ function App() {
             <Route path="/services" element={<Services />} />
             <Route path="/about" element={<About />} />
             <Route path="/product/:slug" element={<ProductDetails />} />
+
+            <Route path="/brand/:slug" element={<BrandProducts />} />
 
             {/* View All / Collection Routes */}
             <Route path="/products" element={<Collection type="all" />} />

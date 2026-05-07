@@ -1,7 +1,14 @@
+// src/components/MidPromo.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const MidPromo = ({ leftData, rightData }) => {
+  const navigate = useNavigate();
   if (!leftData && !rightData) return null;
+
+  const handleLink = (link) => {
+    if (link) link.startsWith('http') ? window.location.href = link : navigate(link);
+  };
 
   return (
     <section className="container mx-auto px-4 py-10">
@@ -9,35 +16,29 @@ const MidPromo = ({ leftData, rightData }) => {
         
         {/* Left Banner */}
         {leftData && (
-          <div className="relative h-64 rounded-3xl overflow-hidden group cursor-pointer shadow-md bg-textBlack">
-            <img src={leftData.image} alt={leftData.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent z-10" />
-            <div className="absolute inset-y-0 left-10 flex flex-col justify-center z-20">
-              <h3 className="text-white text-3xl font-black mb-2">{leftData.title}</h3>
-              {leftData.subtitle && <p className="text-gray-300 mb-6">{leftData.subtitle}</p>}
-              {leftData.button_text && (
-                <button className="bg-white text-black px-6 py-2 rounded-full font-bold text-sm hover:bg-primaryOrange hover:text-white transition-colors w-fit">
-                  {leftData.button_text}
-                </button>
-              )}
-            </div>
+          <div 
+            onClick={() => handleLink(leftData.button_link)}
+            className="relative h-[300px] md:h-[400px] rounded-3xl overflow-hidden group cursor-pointer shadow-lg bg-gray-100"
+          >
+            <img 
+              src={leftData.image} 
+              alt={leftData.title} 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+            />
           </div>
         )}
 
         {/* Right Banner */}
         {rightData && (
-          <div className="relative h-64 rounded-3xl overflow-hidden group cursor-pointer shadow-md bg-textBlack">
-            <img src={rightData.image} alt={rightData.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent z-10" />
-            <div className="absolute inset-y-0 left-10 flex flex-col justify-center z-20">
-              <h3 className="text-white text-3xl font-black mb-2">{rightData.title}</h3>
-              {rightData.subtitle && <p className="text-gray-300 mb-6">{rightData.subtitle}</p>}
-              {rightData.button_text && (
-                <button className="bg-primaryOrange text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-white hover:text-black transition-colors w-fit">
-                  {rightData.button_text}
-                </button>
-              )}
-            </div>
+          <div 
+            onClick={() => handleLink(rightData.button_link)}
+            className="relative h-[300px] md:h-[400px] rounded-3xl overflow-hidden group cursor-pointer shadow-lg bg-gray-100"
+          >
+            <img 
+              src={rightData.image} 
+              alt={rightData.title} 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+            />
           </div>
         )}
 
