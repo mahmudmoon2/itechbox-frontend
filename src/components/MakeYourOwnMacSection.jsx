@@ -42,7 +42,7 @@ const MakeYourOwnMacSection = () => {
           {/* Abstract Mac Illustration */}
           <div className="w-full md:w-1/2 flex justify-center relative">
             <img 
-              src="../assets/mac.webhp"
+              src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Custom Mac" 
               className="w-3/4 object-contain transform group-hover:scale-105 transition-transform duration-700 drop-shadow-2xl"
             />
