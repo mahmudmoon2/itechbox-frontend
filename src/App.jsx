@@ -15,6 +15,8 @@ import Services from './pages/Services'; // এই লাইনটি যোগ 
 import About from './pages/About';
 import ProductDetails from './pages/ProductDetails';
 import BrandProducts from './pages/BrandProducts';
+import CustomizeMacList from './pages/CustomizeMacList';
+import MacCustomization from './pages/MacCustomization';
 
 function App() {
   return (
@@ -45,6 +47,10 @@ function App() {
             {/* Authentication Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+
+            <Route path="/build-your-mac" element={<CustomizeMacList />} />
+            <Route path="/build-your-mac/:slug" element={<MacCustomization />} />
+
           </Routes>
         </div>
 
