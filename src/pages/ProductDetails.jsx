@@ -8,7 +8,8 @@ import { StoreContext } from '../context/StoreContext';
 const ProductDetails = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const { addToCart } = useContext(StoreContext);
+  // StoreContext থেকে categories ডেটাও নিয়ে আসলাম
+  const { addToCart, categories } = useContext(StoreContext);
 
   // States
   const [product, setProduct] = useState(null);
@@ -44,7 +45,6 @@ const ProductDetails = () => {
         }
 
         if (data.colors && data.colors.length > 0) setSelectedColor(data.colors[0]);
-        // যদি স্টোরেজ ও রিজিয়ন ব্যাকএন্ড থেকে আসে তাহলে ডিফল্ট সিলেক্ট হবে
         if (data.storages && data.storages.length > 0) setSelectedStorage(data.storages[0]);
         if (data.regions && data.regions.length > 0) setSelectedRegion(data.regions[0]);
 
@@ -63,13 +63,11 @@ const ProductDetails = () => {
 
   const handleColorSelect = (colorObj) => {
     setSelectedColor(colorObj);
-    // কালারের সাথে ইমেজ থাকলে মেইন ইমেজ চেঞ্জ হয়ে যাবে
     if (colorObj.image) {
       setMainImage(colorObj.image);
     }
   };
 
-  // Image Magnifier Logic
   const handleMouseMove = (e) => {
     const { left, top, width, height } = e.target.getBoundingClientRect();
     const x = ((e.pageX - left) / width) * 100;
@@ -77,7 +75,36 @@ const ProductDetails = () => {
     setZoomPos({ x: `${x}%`, y: `${y}%` });
   };
 
-  // ডামি ডেটা (যদি ব্যাকএন্ড থেকে না আসে তবে ডিজাইনের জন্য এগুলো দেখাবে)
+  // --- স্মার্ট ক্যাটাগরি ফাইন্ডার ---
+  // ব্যাকএন্ড থেকে ID বা Object যা-ই আসুক, এটি সঠিক Slug ও Name বের করে আনবে
+  const getCategoryInfo = () => {
+    if (!product) return { name: "Category", slug: "" };
+    
+    // ১. যদি ব্যাকএন্ড সরাসরি নেস্টেড অবজেক্ট পাঠায়
+    if (product.category && typeof product.category === 'object') {
+      return {
+        name: product.category.name || product.category_name || "Category",
+        slug: product.category.slug || product.category_slug || ""
+      };
+    }
+    
+    // ২. যদি ব্যাকএন্ড শুধু ID (যেমন: 1, 2) পাঠায়, তাহলে StoreContext থেকে মিলিয়ে নেওয়া
+    if (categories && categories.length > 0) {
+      const foundCat = categories.find(c => c.id === product.category);
+      if (foundCat) {
+        return { name: foundCat.name, slug: foundCat.slug };
+      }
+    }
+
+    // ফলব্যাক
+    return { 
+      name: product.category_name || "Category", 
+      slug: product.category_slug || "" 
+    };
+  };
+
+  const categoryInfo = getCategoryInfo();
+
   const dummyStorages = [{ id: 1, name: '128GB' }, { id: 2, name: '256GB' }, { id: 3, name: '512GB' }];
   const dummyRegions = [{ id: 1, name: 'CN - Dual SIM' }, { id: 2, name: 'E-Sim JP' }, { id: 3, name: 'E-Sim USA' }, { id: 4, name: 'SIM+eSIM IND' }];
 
@@ -114,8 +141,12 @@ const ProductDetails = () => {
         <div className="mb-6 flex items-center gap-2 text-sm font-medium text-gray-500">
           <span className="cursor-pointer hover:text-primaryOrange transition" onClick={() => navigate('/')}>Home</span>
           <ChevronRight className="w-4 h-4" />
-          <span className="cursor-pointer hover:text-primaryOrange transition" onClick={() => navigate(`/category/${product.category?.slug}`)}>
-            {product.category_name || product.category?.name || "Category"}
+          {/* UPDATED: Dynamic Category Link */}
+          <span 
+            className={`cursor-pointer hover:text-primaryOrange transition ${!categoryInfo.slug ? 'pointer-events-none' : ''}`}
+            onClick={() => categoryInfo.slug && navigate(`/category/${categoryInfo.slug}`)}
+          >
+            {categoryInfo.name}
           </span>
           <ChevronRight className="w-4 h-4" />
           <span className="text-textBlack truncate max-w-[200px] md:max-w-md">{product.name}</span>
@@ -141,7 +172,7 @@ const ProductDetails = () => {
                   className={`w-full h-full object-contain p-4 transition-transform duration-200 ${isZoomed ? '' : 'group-hover:scale-105'}`}
                   style={isZoomed ? { 
                     transformOrigin: `${zoomPos.x} ${zoomPos.y}`, 
-                    transform: 'scale(2.5)' // জুমের পরিমাণ
+                    transform: 'scale(2.5)' 
                   } : {}}
                 />
               </div>
