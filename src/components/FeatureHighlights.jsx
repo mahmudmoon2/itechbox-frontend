@@ -1,71 +1,62 @@
 // src/components/FeatureHighlights.jsx
 import React from 'react';
-import { Briefcase, PackageCheck, BadgePercent, ArrowLeftRight, Truck, ShieldCheck } from 'lucide-react';
+import { Briefcase, PackageCheck, Truck, MonitorSmartphone, CloudCog, Server } from 'lucide-react';
 
 const FeatureHighlights = () => {
   const features = [
-    { 
-      icon: Briefcase, 
-      text: 'Corporate Deals', 
-      color: 'text-[#3b82f6]' // Blue
-    },
-    { 
-      icon: PackageCheck, 
-      text: 'Official Product', 
-      color: 'text-[#8b5cf6]' // Purple
-    },
-    { 
-      icon: BadgePercent, 
-      text: '0% EMI', 
-      color: 'text-[#eab308]' // Yellow/Gold
-    },
-    { 
-      icon: ArrowLeftRight, 
-      text: 'Exchange', 
-      color: 'text-gray-800' // Dark Gray
-    },
-    { 
-      icon: Truck, 
-      text: 'Fastest Delivery', 
-      color: 'text-[#ef4444]' // Red
-    },
-    { 
-      icon: ShieldCheck, 
-      text: '100% Secure Payment', 
-      color: 'text-[#10b981]' // Green
-    },
+    { icon: Briefcase, text: 'Corporate Deals' },
+    { icon: PackageCheck, text: 'Official Product' },
+    { icon: Truck, text: 'Fastest Delivery' },
+    { icon: MonitorSmartphone, text: 'IT Consultancy' },
+    { icon: CloudCog, text: 'Environment Setup' },
+    { icon: Server, text: 'Server Setup' },
   ];
 
   return (
-    <section className="container mx-auto px-4 lg:px-8 py-8 font-sans">
-      
-      {/* 3D Box Container with subtle shadow and border */}
-      <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 py-5 px-6 lg:px-10 flex flex-row items-center justify-between overflow-x-auto scrollbar-hide gap-8 lg:gap-0 transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.09)]">
+    <section className="container mx-auto px-4 lg:px-8 py-10 font-['Montserrat']">
+      {/* Super light orange background container */}
+      <div className="relative bg-gradient-to-br from-orange-50/60 via-orange-50/30 to-amber-50/40 backdrop-blur-sm rounded-3xl shadow-lg border border-orange-100/60 p-6 md:p-8 transition-all duration-500 hover:shadow-xl">
         
-        {features.map((feature, index) => {
-          const Icon = feature.icon;
-          return (
-            <React.Fragment key={index}>
-              {/* Feature Item */}
-              <div className="flex items-center gap-3.5 flex-shrink-0 group cursor-default">
-                <div className="transition-transform duration-300 group-hover:-translate-y-1 bg-gray-50 p-2.5 rounded-full border border-gray-100 group-hover:bg-white group-hover:shadow-sm">
-                  <Icon className={`w-6 h-6 ${feature.color}`} strokeWidth={1.5} />
+        {/* Grid layout - each feature as a card */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {features.map((feature, idx) => {
+            const Icon = feature.icon;
+            // different icon colors for variety
+            const iconColors = [
+              'text-blue-500', 'text-purple-500', 'text-red-500',
+              'text-orange-500', 'text-emerald-500', 'text-indigo-500'
+            ];
+            return (
+              <div
+                key={idx}
+                className="group relative bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-orange-100/50 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-orange-200 hover:-translate-y-1 cursor-default"
+              >
+                <div className="flex flex-col items-center text-center gap-3">
+                  {/* Icon with circular gradient background */}
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-200 to-amber-200 rounded-full blur-md opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
+                    <div className="relative bg-white p-3 rounded-full shadow-sm group-hover:shadow-md transition-all">
+                      <Icon className={`w-8 h-8 ${iconColors[idx]}`} strokeWidth={1.5} />
+                    </div>
+                  </div>
+                  
+                  {/* Title */}
+                  <h3 className="text-gray-800 font-bold text-base md:text-lg tracking-wide uppercase">
+                    {feature.text}
+                  </h3>
+                  
+                  {/* Decorative underline on hover */}
+                  <div className="w-8 h-0.5 bg-gradient-to-r from-primaryOrange to-amber-400 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:w-12"></div>
                 </div>
-                <span className="text-[#1e293b] font-bold text-[14px] md:text-[15px] whitespace-nowrap">
-                  {feature.text}
-                </span>
               </div>
+            );
+          })}
+        </div>
 
-              {/* Vertical Divider (খুব চিকন ও হালকা কালারের দাগ) */}
-              {index !== features.length - 1 && (
-                <div className="hidden lg:block w-[1px] h-10 bg-gray-200 shrink-0"></div>
-              )}
-            </React.Fragment>
-          );
-        })}
-
+        {/* Optional: subtle corner decoration */}
+        <div className="absolute top-3 right-3 w-20 h-20 bg-gradient-to-br from-orange-200/30 to-transparent rounded-full blur-2xl pointer-events-none"></div>
+        <div className="absolute bottom-3 left-3 w-20 h-20 bg-gradient-to-tr from-amber-200/30 to-transparent rounded-full blur-2xl pointer-events-none"></div>
       </div>
-      
     </section>
   );
 };

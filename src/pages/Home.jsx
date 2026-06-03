@@ -10,6 +10,8 @@ import CampaignBanner from '../components/CampaignBanner';
 import FeaturedGrid from '../components/FeaturedGrid';
 import MakeYourOwnMacSection from '../components/MakeYourOwnMacSection'; // নতুন কম্পোনেন্ট ইমপোর্ট করা হলো
 import FeatureHighlights from '../components/FeatureHighlights';
+import ReviewsSection from '../components/ReviewsSection';
+import BlogSection from '../components/BlogSection';
 const Home = () => {
   // StoreContext থেকে সব ডাইনামিক ডেটা নিয়ে আসছি
   const { banners = [], homeSections = [], products = [] } = useContext(StoreContext);
@@ -90,6 +92,9 @@ const Home = () => {
           />
         </div>
       ))}
+
+      <BlogSection />
+      <ReviewsSection />
 
     </main>
   );
